@@ -26,6 +26,7 @@ class RAGAgent:
 
     def __init__(self, config: Config, knowledge_base: KnowledgeBase) -> None:
         self._config = config
+        self._config.validate()
         self._kb = knowledge_base
         self._client = OpenAI(api_key=config.openai_api_key)
         self._history: list[dict] = []
