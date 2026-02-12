@@ -55,7 +55,7 @@ cp config.yaml.example config.yaml
 | `OPENAI_MODEL` | `openai_model` | `gpt-4o` |
 | `EMBEDDING_MODEL` | `embedding_model` | `text-embedding-3-small` |
 | `KNOWLEDGE_BASE_PATH` | `knowledge_base_path` | `knowledge_base/documents` |
-| `SYSTEM_MESSAGE` | `system_message` | *(built-in default)* |
+| `SYSTEM_MESSAGE_PATH` | `system_message_path` | `system_message.txt` |
 
 ## Running Locally
 

@@ -17,12 +17,7 @@ _DEFAULTS = {
     "openai_model": "gpt-4o",
     "embedding_model": "text-embedding-3-small",
     "knowledge_base_path": "knowledge_base/documents",
-    "system_message": (
-        "You are a helpful AI assistant with access to a knowledge base. "
-        "When answering questions, use the provided context from the knowledge base "
-        "to give accurate, grounded responses. If the context does not contain "
-        "relevant information, say so clearly rather than guessing."
-    ),
+    "system_message_path": "system_message.txt",
 }
 
 # Maps config-file keys to their corresponding environment variable names.
@@ -31,7 +26,7 @@ _ENV_MAP = {
     "openai_model": "OPENAI_MODEL",
     "embedding_model": "EMBEDDING_MODEL",
     "knowledge_base_path": "KNOWLEDGE_BASE_PATH",
-    "system_message": "SYSTEM_MESSAGE",
+    "system_message_path": "SYSTEM_MESSAGE_PATH",
 }
 
 
@@ -91,8 +86,20 @@ class Config:
         return self._data["knowledge_base_path"]
 
     @property
+    def system_message_path(self) -> str:
+        return self._data["system_message_path"]
+
+    @property
     def system_message(self) -> str:
-        return self._data["system_message"]
+        """Read the system message from the configured txt file."""
+        path = Path(self.system_message_path)
+        if not path.is_file():
+            raise FileNotFoundError(
+                f"System message file not found: {path}. "
+                "Create the file or set 'system_message_path' in config.yaml / "
+                "SYSTEM_MESSAGE_PATH env var."
+            )
+        return path.read_text().strip()
 
     def validate(self) -> None:
         """Raise ``ValueError`` if required settings are missing."""
