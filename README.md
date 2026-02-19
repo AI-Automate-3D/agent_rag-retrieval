@@ -7,6 +7,7 @@ A retrieval-augmented generation (RAG) agent that uses OpenAI and a local vector
 ```
 ├── agent/
 │   ├── __init__.py
+│   ├── cli.py             # Production CLI entrypoint
 │   ├── config.py          # Config loader (env vars + YAML)
 │   ├── knowledge_base.py  # Document ingestion & vector search
 │   └── rag_agent.py       # RAG agent with system message
@@ -14,9 +15,10 @@ A retrieval-augmented generation (RAG) agent that uses OpenAI and a local vector
 │   └── documents/         # Drop .txt and .md files here
 ├── notebooks/
 │   └── rag_agent_demo.ipynb  # Jupyter notebook for manual testing
-├── main.py                # CLI entry point
-├── Dockerfile
-├── docker-compose.yaml
+├── main.py                # Backward-compatible CLI shim
+├── tests/
+│   ├── test_config.py
+│   └── test_rag_agent.py
 ├── requirements.txt
 ├── .env.example
 └── config.yaml.example
@@ -63,28 +65,24 @@ cp config.yaml.example config.yaml
 pip install -r requirements.txt
 
 # Interactive CLI
+python -m agent.cli
+
+# Or (legacy shim)
 python main.py
 
 # Use only env vars (ignore config.yaml)
-python main.py --env-only
+python -m agent.cli --env-only
 
 # Use a specific config file
-python main.py --config path/to/config.yaml
+python -m agent.cli --config path/to/config.yaml
+
+# One-shot question (non-interactive)
+python -m agent.cli --question "What is your return policy?"
 ```
 
-## Running with Docker
+## Containerization
 
-```bash
-# Copy and fill in your config
-cp .env.example .env
-cp config.yaml.example config.yaml
-
-# Run the interactive CLI agent
-docker compose run --rm agent
-
-# Run the Jupyter notebook (opens at http://localhost:8888)
-docker compose up notebook
-```
+This repo is intentionally not dockerized. Containerization is handled by the parent repository that composes this module with other services.
 
 ## Jupyter Notebook
 
@@ -97,3 +95,9 @@ The notebook at `notebooks/rag_agent_demo.ipynb` walks through every component:
 ## Adding Knowledge Base Documents
 
 Drop `.txt` or `.md` files into `knowledge_base/documents/`. They are automatically chunked, embedded, and indexed when the agent starts.
+
+## Running Tests
+
+```bash
+python -m unittest discover -s tests -v
+```

@@ -3,6 +3,7 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+.DS_Store
 .env
 config.yaml
 *.egg
@@ -10,3 +11,7 @@ config.yaml
 chroma_db/
 .venv/
 venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
